@@ -5,6 +5,7 @@ import Book from "./Components/Book"
 import Search  from "./Components/Search";
 import{Route,Routes} from 'react-router';
 import {Link} from 'react-router-dom';
+import Shelf from "./Components/shelf";
 /**
  * 
  *
@@ -19,16 +20,20 @@ function App() {
   React.useEffect(()=>{
     
     const fetchBooks =async ()=>{
+
+     try{ 
      const BooksData= await getAll();
-     setBooks( BooksData);
+     setBooks( BooksData);}
+     catch(e){}
     }
     
     
     
   fetchBooks()},[]);
  
-
-
+  let shelves=["currentlyReading","wantToRead","read"]
+  let lists=shelves.map(shelf=>(<Shelf key={shelf} name={shelf} allBooks={books} Books={books.filter(x=>x.shelf==`${shelf}`)}setBooks={setBooks} update={update}></Shelf>));
+ 
   return (
     <Routes>
       
@@ -42,25 +47,8 @@ function App() {
           </div>
           <div className="list-books-content">
             <div>
-              <div className="bookshelf">
-                <h2 className="bookshelf-title">Currently Reading</h2>
-                <div className="bookshelf-books">
-                  <Book allBooks={books} Books={books.filter(x=>x.shelf=="currentlyReading")}setBooks={setBooks} update={update}  />
-                </div>
-              </div>
-              <div className="bookshelf">
-                <h2 className="bookshelf-title">Want to Read</h2>
-                <div className="bookshelf-books">
-                <Book allBooks={books} Books={books.filter(x=>x.shelf=="wantToRead")} setBooks={setBooks} update={update} />
-               
-                </div>
-              </div>
-              <div className="bookshelf">
-                <h2 className="bookshelf-title">Read</h2>
-                <div className="bookshelf-books">
-                <Book  allBooks={books} Books={books.filter(x=>x.shelf=="read")} setBooks={setBooks} update={update} />
-                </div>
-              </div>
+            {lists}
+              
             </div>
           </div>
           <div className="open-search">

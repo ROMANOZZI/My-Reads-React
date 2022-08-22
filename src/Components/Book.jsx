@@ -1,21 +1,17 @@
 import React from "react";
 import { update,getAll } from "../BooksAPI";
+import placeholder from '../icons/No-Image-Placeholder.svg.png'
 export default function Book(props){
  const [bookId,setBookId]=React.useState('');
  const [shelf,setshelf]=React.useState('')
- const changeShelf=(e,id)=>{
-    if(e.target.value==='none'){
+ const changeShelf=(e,id)=>{console.log(props.allBooks);
+    
         
         setBookId(id);
-        setshelf('none');
+        setshelf(e.target.value);
     }
-    else props.setBooks(props.allBooks.map(x=>x.id===id?{...x,shelf:e.target.value}:x));
- }
- const AddBooK=(e,id)=>{
     
-  setBookId(id);
-  setshelf(e.target.value);
- }
+    
  React.useEffect(
     ()=>{
         const updateShelves= async ()=>{
@@ -26,7 +22,7 @@ export default function Book(props){
          props.setBooks( BooksData);
         }
     catch(e){
-       console.log(e);
+      console.log(e)
     } 
     
     }
@@ -34,6 +30,7 @@ export default function Book(props){
 
     },[bookId,shelf]
  )
+ 
   const elements=props.Books.map(x=>(
  <li key={x.id}>
   <div className="book">
@@ -42,11 +39,12 @@ export default function Book(props){
     width: 128,
     height: 193,
     backgroundImage:
-      `url(${x.imageLinks.thumbnail||''})`
+      `url(${x.imageLinks?x.imageLinks.thumbnail: placeholder})` ,
+   backgroundSize : '100% 100%' 
   }}>
     <div className="book-shelf-changer">
-    <select  defaultValue={x.shelf||'none'} onChange={x.shelf?(e)=>changeShelf(e,x.id):(e)=>AddBooK(e,x.id)}>
-     <option value="none" disabled>
+    <select  defaultValue={x.shelf||"none"} onChange={(e)=>changeShelf(e,x.id)}>
+     <option value=" " disabled>
      Move to...
      </option>
      <option value="currentlyReading">
@@ -59,9 +57,10 @@ export default function Book(props){
     </div>
  </div>
 <div className="book-title">{x.title}</div>
-<div className="book-authors">{x.autors}</div>
+<div className="book-authors">{x.authors}</div>
  </div>  
  </li>))
+
  return (
     <ol className="books-grid">
         {elements}
